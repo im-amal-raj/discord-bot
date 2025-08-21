@@ -1,0 +1,39 @@
+const dotenv = require('dotenv');
+const {Client ,  GatewayIntentBits, ClientUser} = require('discord.js');
+
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.GuildInvites,
+        GatewayIntentBits.GuildInvites,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildModeration
+        
+    ]
+});
+
+client.once('ready', () => {
+    console.log|(`The bot is now online`)
+});
+
+const prefix = '.';
+
+client.on('messageCreate', (message) => {
+  if (message.author.id === client.user.id) return;
+
+  if (!message.content.startsWith(prefix)) return;
+
+  const args = message.content.slice(prefix.length).trim().split(/\s+/);
+  const command = args.shift().toLowerCase();
+
+  // Handle commands here
+  if (command === 'ping') {
+    message.channel.send('Pong!');
+  }
+  // Add more commands as needed
+});
+
+client.login(process.env.BOT_TOKEN);
