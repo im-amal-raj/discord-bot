@@ -12,7 +12,6 @@ const client = new Discord.Client({
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildInvites,
-    GatewayIntentBits.GuildInvites,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.GuildModeration,
@@ -35,7 +34,10 @@ for (const file of commandFiles) {
 }
 
 // Message event:
-client.on('messageCreate', message => {
+client.on('messageCreate', async message => {
+  console.log(`Message received: ${message.content} from ${message.author.tag}`);
+  console.log("Is message a reply?", !!message.reference);
+
   // Ignore bots and messages without prefix
   if (message.author.id === client.user.id || !message.content.startsWith(prefix)) return;
 
@@ -45,7 +47,13 @@ client.on('messageCreate', message => {
 
   // Get command and run it
   if (client.commands.has(commandName)) {
-    client.commands.get(commandName).execute(message, args);
+    try {
+      await client.commands.get(commandName).execute(message, args);
+    } catch (error) {
+      console.error(error);
+      message.reply('There was an error executing that command.');
+    }
+
   }
 });
 
